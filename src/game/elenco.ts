@@ -16,7 +16,7 @@
    Os botões são A (fraco), B (médio) e C (forte).
    ========================================================= */
 
-export type AtorId = 'kaneki' | 'juuzou' | 'gojo' | 'arima' | 'chainsaw';
+export type AtorId = 'kaneki' | 'juuzou' | 'gojo' | 'arima' | 'shadow' | 'chainsaw';
 
 /** como o golpe se comporta em campo */
 export type Forma =
@@ -47,6 +47,12 @@ export interface Golpe {
      * quadro do personagem (Kaneki, Juuzou, Arima) não precisa disto.
      */
     efeito?: string;
+    /**
+     * Giro do efeito, em graus, quando ele viaja. No MUGEN o Magic Ray
+     * é desenhado com AngleDraw — o sprite está deitado na folha e quem
+     * decide o ângulo é o estado, não o desenho.
+     */
+    giro?: number;
     dica: string;
 }
 
@@ -76,6 +82,7 @@ export const PODER_MAX = 3000;
    As setas que a interface mostra para cada movimento
    --------------------------------------------------------- */
 export const SETAS: Record<string, string> = {
+    '2': '↓',
     '236': '↓ ↘ →',
     '214': '↓ ↙ ←',
     '26': '↓ →',
@@ -228,6 +235,38 @@ export const ELENCO: Personagem[] = [
         ]
     },
 
+    {
+        id: 'shadow',
+        nome: 'Shadow', jp: 'シャドウ',
+        autor: 'QINYAN', spriteBy: 'QINYAN',
+        obra: 'Kage no Jitsuryokusha ni Naritai!, de Daisuke Aizawa',
+        jogavel: true,
+        vida: 96, rcMax: 130, velocidade: 340, investida: 1.25,
+        resumo: 'O mais rápido e o mais frágil. Quase todo golpe dele é magia, então o Rc acaba antes da vida.',
+        combo: [8, 8, 10, 14], alcanceCombo: 78,
+        golpes: [
+            { anim: 'e1000', nome: 'Magic Ray',  comando: '236A', rc: 20, poder: 0, dano: 26, alcance: 260, forma: 'projetil', golpes: 1, drena: 0, efeito: 'fxRaio', giro: 90,
+              dica: 'SPECIAL 1. Feixe reto de mana. Atravessa o corredor.' },
+            { anim: 'e1100', nome: 'Devastating Wave', comando: '214A', rc: 24, poder: 0, dano: 15, alcance: 130, forma: 'radial', golpes: 4, drena: 0, efeito: 'fxOnda',
+              dica: 'SPECIAL 2. Corta tudo em volta em cruz.' },
+            { anim: 'e1200', nome: 'Magic Belt', comando: '236B', rc: 26, poder: 0, dano: 30, alcance: 120, forma: 'arco', golpes: 3, drena: 0, efeito: 'fxJorro',
+              dica: 'SPECIAL 3. Jorro de mana que sobe do chão à frente.' },
+            { anim: 'e1600', nome: 'Kenbunshoku Haki', comando: '214B', rc: 16, poder: 0, dano: 18, alcance: 96, forma: 'arco', golpes: 2, drena: 6, efeito: 'fxCorte',
+              dica: 'SPECIAL 4. Ele lê o golpe antes de ele sair, e cobra por isso.' },
+            { anim: 'e1400', nome: 'Mikagura', comando: '236C', rc: 34, poder: 0, dano: 20, alcance: 140, forma: 'radial', golpes: 4, drena: 0, efeito: 'fxCruz',
+              dica: 'SPECIAL 5. 五重魔法陣・御神楽. Cinco círculos, tudo ao redor.' },
+            { anim: 'e1500', nome: 'Kyousui', comando: '214C', rc: 30, poder: 0, dano: 34, alcance: 150, forma: 'avanco', golpes: 3, drena: 0, efeito: 'fxPilar',
+              dica: 'SPECIAL 6. 三重魔法陣・鏡水. Um pilar sobe e ele vai atrás.' },
+            { anim: 'e1902', nome: 'Shunpo', comando: '22A', rc: 12, poder: 0, dano: 14, alcance: 88, forma: 'avanco', golpes: 2, drena: 0,
+              dica: '瞬歩. Some de um lugar e reaparece cortando no outro.' },
+            { anim: 'e27000', nome: 'Corte reverso', comando: '2B', rc: 14, poder: 0, dano: 22, alcance: 100, forma: 'arco', golpes: 2, drena: 0, efeito: 'fxCorte',
+              dica: 'Baixo + B. Rápido e barato, para intercalar no combo.' },
+            { anim: 'e14000', nome: 'I Am Atomic', comando: '2C', rc: 0, poder: 1000, dano: 48, alcance: 165, forma: 'radial', golpes: 4, drena: 0, efeito: 'fxVerde',
+              dica: 'Baixo + C. Uma barra de poder. Ele avisa antes.' },
+            { anim: 'e1800', nome: 'Matenrou', comando: '22C', rc: 0, poder: 3000, dano: 88, alcance: 205, forma: 'radial', golpes: 5, drena: 0, efeito: 'fxEsfera',
+              dica: 'SUPER. 摩天楼. As três barras. Não sobra chão.' }
+        ]
+    },
     /* ---------------------------------------------------------
        ADVERSÁRIO
        O Denji não é jogável: é o que mora lá embaixo. Os quatro

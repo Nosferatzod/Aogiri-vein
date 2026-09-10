@@ -525,6 +525,10 @@ function tiros(c: C, j: Jogo) {
                 c.save();
                 c.translate(x, t.y);
                 c.scale(Math.sign(t.vx) || 1, 1);
+                /* o efeito segue a trajetória; o giro fixo endireita
+                   sprites que foram desenhados de pé na folha */
+                const ang = Math.atan2(t.vy, Math.abs(t.vx)) + (t.giro ?? 0) * Math.PI / 180;
+                if (ang) c.rotate(ang);
                 c.imageSmoothingEnabled = false;
                 const mx = misturaDe(q.blend);
                 if (mx.aditiva) c.globalCompositeOperation = 'lighter';

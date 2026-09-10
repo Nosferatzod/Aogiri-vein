@@ -73,13 +73,22 @@ Movimento com pulo duplo, investida com quadros de invulnerabilidade, escorrega
 e pula de parede, mais os dois perdões que fazem plataforma parecer justa:
 **coyote time** (pular um triz depois de sair da borda) e **buffer de pulo**
 (apertar um triz antes de encostar no chão). Cada personagem tem vida, passo,
-combo e **sete golpes próprios**, nas teclas 1 a 7.
+combo e **a movelist inteira dele**, nos comandos de numpad do gênero
+(236A, 214C, 22C…) mais barra de poder de três níveis, como no MUGEN. As teclas
+1 a 8 são um atalho para quem não quiser decorar.
 
-**O cenário e o chefe são código puro.** O túnel é silhueta preta contra fundo
-aceso, e o chefe é uma centopeia segmentada em que cada elo persegue o anterior
-— nenhum sprite tem 22 segmentos. Os personagens e os inimigos, esses vêm dos
-atlas convertidos; se faltarem, entra no lugar um boneco animado por função,
-com perna e braço saindo de senos sobre o tempo.
+**O cenário e o chefe são código puro.** A rua é Tóquio à noite em quatro
+camadas de paralaxe — prédios, fiação, letreiros de neon com kanji (um deles
+pisca) — e o chefe é uma centopeia segmentada em que cada elo persegue o
+anterior; nenhum sprite tem 22 segmentos. Os personagens, os inimigos e os
+efeitos de golpe vêm dos atlas convertidos; se faltarem, entra no lugar um
+boneco animado por função, com perna e braço saindo de senos sobre o tempo.
+
+**O som é sintetizado no navegador.** Nada de arquivo de áudio: doze vozes
+montadas com WebAudio na hora (osciladores com envelope e ruído branco
+filtrado), num compressor para o momento em que tudo acontece junto. O motor
+não toca nada — ele empilha nomes de evento numa fila e quem drena é a view,
+que é o que deixa o motor continuar rodando fora do navegador nos testes.
 
 **Os personagens vêm do M.U.G.E.N, convertidos por uma ferramenta deste
 repositório.** `scripts/mugen-para-web.mjs` lê os **dois** formatos de sprite
@@ -89,12 +98,19 @@ do MUGEN:
   O PCX de 8 bits com RLE é decodificado na mão, com paletas compartilhadas e
   sprites ligados resolvidos.
 - **SFF v2** — tabela de nós, onde cada sprite pode estar em PNG8/24/32, RLE8,
-  RLE5 ou cru. O leitor de PNG também é escrito na mão (chunks, inflate pelo
-  zlib do node, os cinco filtros desfeitos linha a linha).
+  RLE5, LZ5 ou cru. O leitor de PNG também é escrito na mão (chunks, inflate
+  pelo zlib do node, os cinco filtros desfeitos linha a linha). Duas
+  armadilhas que custaram caro: o bloco PNG vem com quatro bytes de tamanho
+  antes da assinatura, e **PNG8 dentro de SFF não traz PLTE** — a paleta está
+  no banco de paletas do arquivo, e sem isso o sprite inteiro sai preto.
 
-Depois lê o `.air` para saber os quadros e a duração de cada animação e escreve
-um atlas PNG — codificado na mão, sem biblioteca — mais um JSON. **Os três
-personagens juntos ocupam 176 KB**, tirados de pacotes que somam mais de 140 MB.
+Depois lê o `.air` para saber os quadros, a duração e **a mistura** de cada
+animação — o campo de blend do `.air` vira `globalCompositeOperation` aditivo
+na tela, que é o que faz o fundo preto dos efeitos sumir — e escreve um atlas
+PNG, codificado na mão, sem biblioteca, mais um JSON. Efeitos de tela cheia
+passam por um redutor de caixa com média ponderada por alfa. **Os seis atlas
+somam 1,3 MB**, tirados de pacotes que somam mais de 250 MB — só o do Shadow
+tem 82 MB de `.sff`.
 
 Os golpes não foram escolhidos no olho: um script rastreia
 **comando → statedef → anim** dentro do `.cmd` e dos `.cns` do próprio
@@ -105,17 +121,23 @@ Se um atlas faltar, o jogo não quebra — volta para a silhueta desenhada em
 código. O sprite é acréscimo, não dependência.
 
 > **Ken Kaneki** (All-Stars) por **Rivelio**, folhas de sprite de **Aagus** e
-> **MattFV** · **Juuzou Suzuya** · **Denji** por **Stand User X**. Personagens
-> de M.U.G.E.N usados com autorização e creditados dentro da própria aba que os
-> exibe. Tokyo Ghoul é de Sui Ishida; Chainsaw Man é de Tatsuki Fujimoto.
-> Nenhum áudio dos pacotes originais foi utilizado.
+> **MattFV** · **Juuzou Suzuya** · **Satoru Gojo** · **Kishou Arima** ·
+> **Shadow** por **QINYAN** · **Denji** por **Stand User X**. Personagens de
+> M.U.G.E.N usados com autorização e creditados dentro da própria aba que os
+> exibe. Tokyo Ghoul é de Sui Ishida; Jujutsu Kaisen é de Gege Akutami;
+> Chainsaw Man é de Tatsuki Fujimoto; Kage no Jitsuryokusha ni Naritai! é de
+> Daisuke Aizawa. **Nenhum áudio dos pacotes originais foi utilizado** — o som
+> do jogo é sintetizado.
 
 **O motor é puro e por isso é testado.** Fase, física e colisão não importam
 React nem Canvas, então rodam fora do navegador: um script confere que as 11
 salas têm largura exata e passagem aberta dos dois lados, que o covil é
 alcançável em 400 montagens seguidas, e um bot de entrada aleatória roda 3000
-quadros por kagune procurando NaN, jogador presa dentro da pedra ou fora do
-mundo. A invariante das salas virou código: a largura e as passagens são
+quadros por personagem procurando NaN, jogador preso dentro da pedra ou fora
+do mundo. Outro confere que os 48 golpes saem com o comando certo e que a
+barra de poder trava e consome como devia; outro abre os `ator.json`
+publicados e garante que toda animação e todo efeito que o elenco pede existe
+mesmo no atlas — nenhum projétil pode ficar sem o sprite do próprio pacote. A invariante das salas virou código: a largura e as passagens são
 normalizadas na carga, em vez de depender de 150 linhas digitadas certo.
 
 **O gerador de fichas** desenha em Canvas em 900×1260 e exporta PNG. A contagem

@@ -8,6 +8,7 @@ import {
 } from './subsoloJogo';
 import { desenhar } from './subsoloDesenho';
 import { carregarAtores, ator, duracaoDe } from './subsoloSprite';
+import { acordarSom, alternarMudo, estaMudo, tocarFila } from './subsoloSom';
 import './Subsolo.css';
 
 /* =========================================================
@@ -56,6 +57,7 @@ export default function Subsolo({ side }: { side: Side }) {
     const [melhor, setMelhor] = useState(0);
     const [venceu, setVenceu] = useState(false);
     const [prontos, setProntos] = useState(false);
+    const [mudo, setMudo] = useState(estaMudo);
     const [painel, setPainel] = useState<Painel>({
         hp: 100, hpMax: 100, rc: 0, rcMax: 100,
         prog: 0, abatidos: 0, poder: 0, chefe: null, aviso: null, golpe: null
@@ -174,6 +176,7 @@ export default function Subsolo({ side }: { side: Side }) {
             }
 
             desenhar(ctx, j);
+            tocarFila(j.sons);
 
             desdeSync += bruto;
             if (desdeSync > 0.1) {
@@ -210,6 +213,7 @@ export default function Subsolo({ side }: { side: Side }) {
         /* a duração de cada golpe sai do próprio atlas do personagem */
         const a = ator(id);
         definirDuracoes(nome => (a ? duracaoDe(a, nome) : 0));
+        acordarSom();
         jogo.current = criarJogo(id);
         tecla.current = teclaVazia();
         setFim(null);
@@ -233,10 +237,21 @@ export default function Subsolo({ side }: { side: Side }) {
                                 : 'Todo mundo aqui embaixo já foi gente lá em cima. O caminho nunca é o mesmo duas vezes, e no fim tem uma coisa comprida que ninguém conseguiu contar quantos segmentos tem.'}
                         </p>
                     </div>
-                    <p className="sb__best">
-                        <b>{melhor}%</b>
-                        <small>{venceu ? 'descida completa' : 'mais fundo que você chegou'}</small>
-                    </p>
+                    <div className="sb__canto">
+                        <button
+                            type="button"
+                            className="sb__som"
+                            onClick={() => { acordarSom(); setMudo(alternarMudo()); }}
+                            aria-pressed={!mudo}
+                            title={mudo ? 'Ligar o som' : 'Desligar o som'}
+                        >
+                            {mudo ? '🔇 som desligado' : '🔊 som ligado'}
+                        </button>
+                        <p className="sb__best">
+                            <b>{melhor}%</b>
+                            <small>{venceu ? 'descida completa' : 'mais fundo que você chegou'}</small>
+                        </p>
+                    </div>
                 </header>
 
                 {etapa === 'escolha' && <Escolha onDescer={descer} prontos={prontos} />}
@@ -295,7 +310,7 @@ function Escolha({ onDescer, prontos }: { onDescer: (id: AtorId) => void; pronto
                             onClick={() => setAberto(p.id)}
                             aria-pressed={aberto === p.id}
                         >
-                            <Retrato id={p.id} />
+                            <Retrato id={p.id} prontos={prontos} />
                             <span className="rt__jp">{p.jp}</span>
                             <span className="rt__nome">{p.nome}</span>
                         </button>
@@ -360,8 +375,13 @@ function Escolha({ onDescer, prontos }: { onDescer: (id: AtorId) => void; pronto
     );
 }
 
-/** recorta o quadro parado do atlas direto num canvas */
-function Retrato({ id }: { id: AtorId }) {
+/**
+ * Recorta o quadro parado do atlas direto num canvas.
+ * O `prontos` precisa estar na lista de dependências: os atlas chegam
+ * depois da primeira pintura, e sem ele o efeito rodava uma vez só, com
+ * `ator(id)` ainda nulo — os retratos ficavam vazios para sempre.
+ */
+function Retrato({ id, prontos }: { id: AtorId; prontos: boolean }) {
     const cv = useRef<HTMLCanvasElement>(null);
     useEffect(() => {
         const c = cv.current?.getContext('2d');
@@ -375,7 +395,7 @@ function Retrato({ id }: { id: AtorId }) {
         c.clearRect(0, 0, 84, 92);
         c.drawImage(a.img, q.x, q.y, q.w, q.h,
             42 - (q.w * esc) / 2, 88 - q.h * esc, q.w * esc, q.h * esc);
-    }, [id]);
+    }, [id, prontos]);
     return <canvas ref={cv} className="rt__cv" width={84} height={92} />;
 }
 
@@ -512,8 +532,9 @@ function Creditos() {
                 ))}
             </ul>
             <p>
-                Usados com autorização. Nenhum áudio dos pacotes originais foi utilizado.
-                O cenário, o chefe e os efeitos são desenhados em código.
+                Usados com autorização. Os efeitos de golpe são as animações que vêm
+                nos próprios pacotes. O cenário e o chefe são desenhados em código.
+                Nenhum áudio dos pacotes foi utilizado: o som é sintetizado no navegador.
             </p>
         </div>
     );

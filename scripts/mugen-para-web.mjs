@@ -132,6 +132,39 @@ export const PERFIS = {
             fxCorte: { acao: 569, loop: false, limite: 420 }
         }
     },
+    shadow: {
+        nome: 'Shadow', jp: 'シャドウ',
+        autor: 'QINYAN', sprites: 'QINYAN',
+        anims: {
+            ...BASE,
+            correr:    { acao: 100,  loop: true },
+            investida: { acao: 105,  loop: false },
+            golpe1:    { acao: 200,  loop: false },
+            golpe2:    { acao: 220,  loop: false },
+            golpe3:    { acao: 210,  loop: false },
+            /* SPECIAL 1..6, os dois "baixo + botão" e o SUPER1, na ordem do .cmd */
+            e1000:  { acao: 1000,               loop: false, limite: 320 },
+            e1100:  { acao: [480, 481],         loop: false, limite: 320 },
+            e1200:  { acao: [1200, 1201, 1202], loop: false, limite: 320 },
+            e1400:  { acao: [1400, 1401],       loop: false, limite: 320 },
+            e1500:  { acao: [1500, 1501, 1503], loop: false, limite: 320 },
+            e1600:  { acao: 1600,               loop: false, limite: 320 },
+            e1800:  { acao: 1800,               loop: false, limite: 340 },
+            e14000: { acao: [14000, 14010],     loop: false, limite: 320 },
+            e27000: { acao: 27000,              loop: false, limite: 320 },
+            e1902:  { acao: 1902,               loop: false, limite: 320 },
+            /* efeitos: neste personagem a pose é minúscula e quem aparece
+               em cena é o efeito, que o MUGEN guarda em animação separada */
+            fxRaio:   { acao: 1070, loop: false, limite: 400, reduzir: 2 },
+            fxOnda:   { acao: 225,  loop: false, limite: 400, reduzir: 3 },
+            fxJorro:  { acao: 1260, loop: false, limite: 400, reduzir: 2 },
+            fxCorte:  { acao: 7022, loop: false, limite: 400 },
+            fxCruz:   { acao: 1508, loop: false, limite: 400, reduzir: 2 },
+            fxPilar:  { acao: 1510, loop: false, limite: 400, reduzir: 3 },
+            fxVerde:  { acao: 1550, loop: false, limite: 400, reduzir: 2 },
+            fxEsfera: { acao: 3450, loop: false, limite: 400, reduzir: 2 }
+        }
+    },
     chainsaw: {
         nome: 'Denji', jp: 'チェンソーマン',
         autor: 'Stand User X', sprites: 'Stand User X',

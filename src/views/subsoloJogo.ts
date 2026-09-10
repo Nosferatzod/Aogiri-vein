@@ -143,6 +143,8 @@ export interface Tiro {
     dano: number; doJogador: boolean; vida: number; raio: number;
     /** animação de efeito do personagem, quando o golpe tem uma */
     fx?: string;
+    /** giro do sprite do efeito, em graus */
+    giro?: number;
 }
 
 export interface Faisca {
@@ -184,6 +186,11 @@ export interface Jogo {
     aviso: { texto: string; vida: number } | null;
     /** nome do golpe que acabou de sair, para a interface mostrar */
     ultimoGolpe: { nome: string; vida: number } | null;
+    /**
+     * Fila de sons pedidos neste quadro. O motor não toca nada — ele
+     * roda fora do navegador nos testes. Quem drena é a view.
+     */
+    sons: string[];
 }
 
 /** quanto dura cada animação, medido no atlas; quem informa é a view */
@@ -240,7 +247,8 @@ export function criarJogo(heroi: AtorId, rand: () => number = Math.random): Jogo
         abatidos: 0, rcTotal: 0, tempo: 0,
         fim: null,
         aviso: { texto: 'Nenhuma planta oficial deste lugar existe.', vida: 4 },
-        ultimoGolpe: null
+        ultimoGolpe: null,
+        sons: []
     };
 }
 
@@ -302,6 +310,7 @@ export function passo(j: Jogo, k: Tecla, dt: number) {
     if (j.p.hp <= 0 && !j.p.morto) {
         j.p.morto = true;
         j.fim = 'morte';
+        j.sons.push('morte');
         j.tremor = 1;
         faiscar(j, j.p.x, j.p.y, 40, '#b3121e', 320);
     }
@@ -359,6 +368,7 @@ function atualizarJogador(j: Jogo, k: Tecla, dt: number) {
             p.espDur = p.espTotal;
             p.espSaiu = 0;
             j.ultimoGolpe = { nome: g.nome, vida: 1.4 };
+            j.sons.push(g.poder > 0 ? 'super' : 'especial');
             j.tremor = Math.max(j.tremor, 0.25);
         }
     }
@@ -394,6 +404,7 @@ function atualizarJogador(j: Jogo, k: Tecla, dt: number) {
         p.atkDur = 0.18;
         p.acertou = false;
         p.comboJanela = 0.52;
+        j.sons.push('corte');
     }
     if (p.atkDur > 0) {
         p.atkDur -= dt;
@@ -425,11 +436,14 @@ function atualizarJogador(j: Jogo, k: Tecla, dt: number) {
             p.vx = -p.naParede * F.paredePuloX;
             p.olhar = (-p.naParede) as 1 | -1;
             p.buffer = 0; p.pulosRestantes = 1;
+            j.sons.push('pulo');
             faiscar(j, p.x + p.naParede * 12, p.y, 7, '#7d8ea1', 140);
         } else if (p.noChao || p.coyote > 0) {
             p.vy = -F.pulo; p.buffer = 0; p.coyote = 0; p.pulosRestantes = 1;
+            j.sons.push('pulo');
         } else if (p.pulosRestantes > 0) {
             p.vy = -F.puloDuplo; p.buffer = 0; p.pulosRestantes -= 1;
+            j.sons.push('pulo');
             faiscar(j, p.x, p.y + 16, 9, '#6f9dc4', 160);
         }
     }
@@ -470,6 +484,7 @@ function atualizarJogador(j: Jogo, k: Tecla, dt: number) {
     if (!j.chefe.ativo && !j.chefe.morto && p.x > (j.fase.covil - 18) * TILE) {
         j.chefe.ativo = true;
         j.tremor = 1;
+        j.sons.push('chefe');
         avisar(j, CHEFE.intro);
     }
 }
@@ -494,8 +509,9 @@ function aplicarGolpe(j: Jogo, g: Golpe) {
             x: p.x + p.olhar * 20, y: p.y - 4,
             vx: p.olhar * 760, vy: 0,
             dano: g.dano, doJogador: true, vida: g.alcance / 760 + 0.35, raio: 9,
-            fx: g.efeito
+            fx: g.efeito, giro: g.giro
         });
+        j.sons.push('tiro');
         faiscar(j, p.x + p.olhar * 22, p.y - 4, 8, '#ff5f6d', 160);
         return;
     }
@@ -521,6 +537,7 @@ function golpear(j: Jogo, dano: number, alcance: number, radial: boolean, drena:
         b.vx += Math.sign(b.x - p.x || 1) * 170;
         b.est = 'dano'; b.estT = 0;
         bateu = true;
+        j.sons.push('acerto');
         faiscar(j, b.x, b.y, 9, '#b3121e', 220);
 
         if (b.hp <= 0) {
@@ -531,6 +548,7 @@ function golpear(j: Jogo, dano: number, alcance: number, radial: boolean, drena:
             const rc = BICHOS[b.tipo].rc;
             p.rc = Math.min(p.rcMax, p.rc + rc);
             j.rcTotal += rc;
+            j.sons.push('abate');
             faiscar(j, b.x, b.y, 22, '#ff1c2d', 300);
         }
     }
@@ -540,10 +558,12 @@ function golpear(j: Jogo, dano: number, alcance: number, radial: boolean, drena:
         c.hp -= dano;
         c.flash = 0.16;
         bateu = true;
+        j.sons.push('acerto');
         faiscar(j, c.x, c.y, 12, '#ff1c2d', 260);
         if (c.hp <= 0) {
             c.morto = true; c.ativo = false;
             j.fim = 'vitoria'; j.tremor = 1.2;
+            j.sons.push('vitoria');
             faiscar(j, c.x, c.y, 60, '#ff1c2d', 400);
         }
     }
@@ -567,6 +587,7 @@ function ferirJogador(j: Jogo, dano: number, empurra: number) {
     p.vy = -220;
     j.tremor = 0.7;
     j.piscar = 1;
+    j.sons.push('dano');
     faiscar(j, p.x, p.y, 12, '#b3121e', 220);
 }
 
@@ -764,9 +785,11 @@ function atualizarItens(j: Jogo) {
         if (it.tipo === 'rc') {
             p.rc = Math.min(p.rcMax, p.rc + 40);
             j.rcTotal += 40;
+            j.sons.push('item');
             faiscar(j, it.x, it.y, 14, '#ff1c2d', 180);
         } else {
             p.hp = Math.min(p.hpMax, p.hp + 30);
+            j.sons.push('item');
             faiscar(j, it.x, it.y, 14, '#e0d3b8', 150);
             avisar(j, 'Você come sem olhar de quem era. É assim que fica mais fácil.');
         }
