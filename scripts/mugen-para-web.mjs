@@ -125,7 +125,11 @@ export const PERFIS = {
             e3050: { acao: [3050, 3051, 3052, 3053], loop: false, limite: 340 },
             e3100: { acao: [3100, 3101, 3102, 3103], loop: false, limite: 340 },
             e3150: { acao: [3150, 3151, 3152],       loop: false, limite: 340 },
-            e114514: { acao: 114514, loop: false, limite: 360 }
+            e114514: { acao: 114514, loop: false, limite: 360 },
+            /* efeitos que o próprio personagem traz */
+            fxRaio:  { acao: 556, loop: false, limite: 400 },
+            fxTrovao:{ acao: 557, loop: false, limite: 400 },
+            fxCorte: { acao: 569, loop: false, limite: 420 }
         }
     },
     chainsaw: {
