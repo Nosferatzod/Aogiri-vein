@@ -1,0 +1,27 @@
+.cnt {
+    position: fixed;
+    inset: 0;
+    z-index: 980;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1.5rem;
+    background: rgba(3, 1, 2, .97);
+    cursor: pointer;
+    animation: fadeUp .4s var(--slow);
+}
+.cnt__n {
+    font-family: var(--f-display);
+    font-size: clamp(4rem, 22vw, 14rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--blood-bright);
+    text-shadow: 0 0 40px rgba(255, 28, 45, .45);
+    font-variant-numeric: tabular-nums;
+}
+.cnt__hint {
+    font-size: .62rem;
+    letter-spacing: .32em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}

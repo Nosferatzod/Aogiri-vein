@@ -1,0 +1,72 @@
+.boot {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    background: var(--bg-deep);
+    cursor: pointer;
+}
+
+.boot__screen {
+    width: min(720px, 100%);
+    padding: clamp(1.2rem, 4vw, 2.4rem);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    position: relative;
+}
+.boot__screen::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--line-soft);
+    pointer-events: none;
+}
+
+.boot__log {
+    font-family: var(--f-mono);
+    font-size: clamp(.72rem, 1.9vw, .86rem);
+    line-height: 1.95;
+    color: var(--ink-soft);
+    display: grid;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.boot__log span { animation: fadeUp .28s var(--ease) both; }
+.boot__log .is-warn { color: var(--blood-bright); }
+.boot__log span:last-of-type { color: var(--accent); }
+
+.boot__caret {
+    color: var(--accent);
+    animation: pulse .9s steps(2) infinite;
+}
+
+.boot__enter {
+    margin-top: 1.6rem;
+    padding: .7rem 1.6rem;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--f-mono);
+    font-size: .7rem;
+    letter-spacing: .28em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color .3s var(--ease), color .3s var(--ease), letter-spacing .3s var(--ease);
+}
+.boot__enter:hover {
+    background: var(--accent);
+    color: var(--bg-deep);
+    letter-spacing: .36em;
+}
+
+.boot__skip {
+    position: absolute;
+    bottom: 1.4rem; left: 50%;
+    transform: translateX(-50%);
+    font-size: .6rem;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}

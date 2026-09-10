@@ -1,0 +1,328 @@
+/* =========================================================
+   ARQUIVO CCG — base
+   Duas paletas no mesmo documento. O atributo data-side no
+   <html> troca tudo de uma vez: cor, textura, ruído e ritmo.
+   ========================================================= */
+
+/* ---------- RESET ---------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+img, svg { display: block; max-width: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+
+/* ---------- TOKENS COMUNS ---------- */
+:root {
+    --f-display: 'Shippori Mincho', 'Times New Roman', serif;
+    --f-mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --f-jp: 'Noto Sans JP', sans-serif;
+
+    --ease: cubic-bezier(.22, .9, .28, 1);
+    --slow: cubic-bezier(.16, 1, .3, 1);
+
+    --blood: #b3121e;
+    --blood-bright: #ff1c2d;
+    --blood-deep: #5c0810;
+
+    color-scheme: dark;
+}
+
+/* ---------- LADO CCG: clínico, frio, quadrado ---------- */
+:root,
+:root[data-side='ccg'] {
+    --bg:        #080b10;
+    --bg-deep:   #05070a;
+    --panel:     #0d1219;
+    --panel-2:   #121924;
+    --line:      #1f2b3a;
+    --line-soft: #16202c;
+
+    --ink:       #c6d2de;
+    --ink-soft:  #7d8ea1;
+    --ink-mute:  #4d5c6d;
+
+    --accent:      #6f9dc4;
+    --accent-soft: rgba(111, 157, 196, .14);
+    --accent-glow: rgba(111, 157, 196, .35);
+
+    --grain: .04;
+    --scan: .30;
+    --radius: 2px;
+}
+
+/* ---------- LADO GHOUL: preto, sangue, orgânico ---------- */
+:root[data-side='ghoul'] {
+    --bg:        #060305;
+    --bg-deep:   #030102;
+    --panel:     #0e0709;
+    --panel-2:   #150a0d;
+    --line:      #35141a;
+    --line-soft: #250d12;
+
+    --ink:       #e4d9db;
+    --ink-soft:  #9c8288;
+    --ink-mute:  #63494f;
+
+    --accent:      var(--blood-bright);
+    --accent-soft: rgba(255, 28, 45, .12);
+    --accent-glow: rgba(255, 28, 45, .4);
+
+    --grain: .07;
+    --scan: .18;
+    --radius: 0px;
+}
+
+/* ---------- BASE ---------- */
+body {
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--f-mono);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color .9s var(--slow), color .9s var(--slow);
+}
+
+::selection { background: var(--accent); color: var(--bg-deep); }
+
+:focus-visible { outline: 1px solid var(--accent); outline-offset: 3px; }
+
+/* ---------- TEXTURA DE TELA ---------- */
+.veil {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    pointer-events: none;
+}
+/* linhas de varredura */
+.veil::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        to bottom,
+        transparent 0 2px,
+        rgba(0, 0, 0, .5) 2px 3px
+    );
+    opacity: var(--scan);
+    transition: opacity .9s var(--slow);
+}
+/* granulado + vinheta */
+.veil::after {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: var(--grain);
+    animation: grain 800ms steps(4) infinite;
+    transition: opacity .9s var(--slow);
+}
+@keyframes grain {
+    0%   { transform: translate(0, 0); }
+    25%  { transform: translate(-2%, 1%); }
+    50%  { transform: translate(1%, -2%); }
+    75%  { transform: translate(-1%, -1%); }
+    100% { transform: translate(0, 0); }
+}
+
+.vignette {
+    position: fixed;
+    inset: 0;
+    z-index: 899;
+    pointer-events: none;
+    background: radial-gradient(130% 100% at 50% 45%, transparent 45%, rgba(0, 0, 0, .78) 100%);
+}
+
+/* o lado ghoul respira em vermelho */
+:root[data-side='ghoul'] .vignette {
+    background:
+        radial-gradient(130% 100% at 50% 45%, transparent 40%, rgba(0, 0, 0, .85) 100%),
+        radial-gradient(80% 60% at 50% 120%, rgba(179, 18, 30, .22), transparent 70%);
+}
+
+/* ---------- TIPOGRAFIA ---------- */
+.display {
+    font-family: var(--f-display);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -.01em;
+}
+
+.mono-label {
+    font-family: var(--f-mono);
+    font-size: .68rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.jp-vert {
+    font-family: var(--f-jp);
+    writing-mode: vertical-rl;
+    letter-spacing: .35em;
+    font-size: .7rem;
+    color: var(--ink-mute);
+    user-select: none;
+}
+
+/* ---------- LAYOUT ---------- */
+.wrap { width: min(1220px, 100% - 2.5rem); margin-inline: auto; }
+.section { padding: clamp(2.5rem, 6vw, 5rem) 0; }
+
+.rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--line), transparent);
+    border: 0;
+}
+
+/* ---------- PAINEL ---------- */
+.panel {
+    position: relative;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition: background-color .9s var(--slow), border-color .9s var(--slow);
+}
+
+/* marcas de canto, tipo folha de processo */
+.ticked::before,
+.ticked::after {
+    content: '';
+    position: absolute;
+    width: 10px; height: 10px;
+    border: 1px solid var(--accent);
+    opacity: .55;
+    pointer-events: none;
+    transition: border-color .9s var(--slow);
+}
+.ticked::before { top: 5px; left: 5px; border-right: 0; border-bottom: 0; }
+.ticked::after { bottom: 5px; right: 5px; border-left: 0; border-top: 0; }
+
+/* ---------- BOTÕES ---------- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    padding: .72rem 1.4rem;
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--f-mono);
+    font-size: .72rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color .3s var(--ease), border-color .3s var(--ease),
+                background-color .3s var(--ease), letter-spacing .3s var(--ease);
+}
+.btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    letter-spacing: .28em;
+}
+.btn:disabled { opacity: .35; cursor: not-allowed; }
+.btn--solid { background: var(--accent); color: var(--bg-deep); border-color: var(--accent); }
+.btn--solid:hover { background: var(--ink); border-color: var(--ink); color: var(--bg-deep); }
+.btn--block { width: 100%; }
+
+/* ---------- CENSURA ---------- */
+.redact {
+    position: relative;
+    display: inline;
+    cursor: help;
+    color: transparent;
+    background: var(--ink-mute);
+    border-radius: 1px;
+    transition: color .5s var(--ease), background-color .5s var(--ease);
+    user-select: none;
+}
+.redact::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        90deg, var(--ink-mute) 0 4px, var(--bg) 4px 5px
+    );
+    opacity: .5;
+}
+.redact.is-open {
+    color: var(--accent);
+    background: transparent;
+    user-select: auto;
+    cursor: default;
+}
+.redact.is-open::after { opacity: 0; }
+
+/* ---------- ETIQUETAS DE AMEAÇA ---------- */
+.rate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.6rem;
+    padding: .1rem .4rem;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+}
+.rate--C   { color: var(--ink-mute); }
+.rate--B   { color: #7d8ea1; }
+.rate--A   { color: #c9a227; }
+.rate--S   { color: #e0722f; }
+.rate--SS  { color: var(--blood-bright); }
+.rate--SSS {
+    color: var(--blood-bright);
+    border-color: var(--blood-bright);
+    box-shadow: 0 0 14px rgba(255, 28, 45, .35), inset 0 0 12px rgba(255, 28, 45, .12);
+}
+
+/* ---------- ANIMAÇÕES ---------- */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: none; }
+}
+.fade-up { animation: fadeUp .6s var(--slow) both; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .4; }
+}
+
+/* rasgo de tela na troca de lado */
+@keyframes tear {
+    0%   { clip-path: inset(0 0 100% 0); opacity: 1; }
+    30%  { clip-path: inset(0 0 0 0); }
+    100% { clip-path: inset(100% 0 0 0); opacity: 1; }
+}
+.tear {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    pointer-events: none;
+    background: var(--blood);
+    mix-blend-mode: difference;
+    animation: tear .7s var(--ease) forwards;
+}
+
+/* ---------- SCROLLBAR ---------- */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--line); border: 2px solid var(--bg-deep); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ---------- MOVIMENTO REDUZIDO ---------- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+    }
+    .veil::after { display: none; }
+}

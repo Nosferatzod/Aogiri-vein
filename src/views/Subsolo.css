@@ -1,0 +1,467 @@
+/* =========================================================
+   二十四区 SUBSOLO
+   O jogo é canvas; aqui fica só a moldura — escolha, painel
+   e telas de fim. Compartilha .pane / .end__stats com o Kakuja,
+   que é a folha carregada junto no mesmo App.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   PAINEL DE TELA CHEIA
+   Estas classes moravam na folha do Kakuja, que saiu do projeto.
+   Vieram para cá porque é o Subsolo que as usa agora.
+   --------------------------------------------------------- */
+.pane { padding: clamp(1.5rem, 4vw, 2.6rem); }
+.pane__title { font-size: clamp(1.4rem, 3.4vw, 2.2rem); margin: .2rem 0 .7rem; }
+.pane__text { max-width: 68ch; color: var(--ink-soft); line-height: 1.85; }
+
+.pane__go, .pane__skip {
+    margin-top: 1.5rem;
+    padding: .6rem 1.4rem;
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: var(--f-mono); font-size: .68rem;
+    letter-spacing: .2em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color .3s, color .3s;
+}
+.pane__go:hover { background: var(--accent); color: var(--bg-deep); }
+.pane__skip { border-color: var(--line); color: var(--ink-mute); letter-spacing: .1em; text-transform: none; }
+.pane__skip:hover { border-color: var(--ink-mute); color: var(--ink-soft); }
+
+.end__stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin: 1.8rem 0 0;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--line-soft);
+}
+.end__stats dt {
+    font-family: var(--f-mono); font-size: .58rem;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute);
+}
+.end__stats dd { margin: .3rem 0 0; font-family: var(--f-display); font-size: 1.2rem; color: var(--ink); }
+
+.sb { position: relative; }
+
+.sb__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.6rem;
+}
+.sb__title { font-size: clamp(1.7rem, 4vw, 2.7rem); margin: .3rem 0 .5rem; }
+.sb__lead { max-width: 62ch; color: var(--ink-soft); line-height: 1.75; }
+
+.sb__best { text-align: right; font-family: var(--f-mono); line-height: 1.2; }
+.sb__best b { display: block; font-size: 2.1rem; color: var(--blood-bright); }
+.sb__best small {
+    font-size: .62rem; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--ink-mute);
+}
+
+/* ---------------------------------------------------------
+   ESCOLHA DE PERSONAGEM
+   --------------------------------------------------------- */
+.sb__introText {
+    max-width: 72ch;
+    margin: 0 0 1.6rem;
+    color: var(--ink-soft);
+    line-height: 1.85;
+}
+.sb__introText b { color: var(--ink); }
+.sb__introText em { color: var(--accent); font-style: normal; }
+
+.sb__fichas {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.1rem;
+    align-items: start;
+}
+
+.sb__retratos { display: grid; gap: .7rem; }
+
+.rt {
+    display: grid;
+    justify-items: center;
+    gap: .1rem;
+    width: 118px;
+    padding: .6rem .5rem .7rem;
+    background: linear-gradient(170deg, var(--panel), var(--bg-deep));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color .3s var(--ease), transform .3s var(--ease);
+}
+.rt:hover { transform: translateY(-3px); border-color: var(--ink-mute); }
+.rt.is-on {
+    border-color: var(--blood-bright);
+    box-shadow: inset 0 0 0 1px var(--blood-deep), 0 0 22px -8px var(--blood-bright);
+}
+.rt__cv {
+    display: block;
+    width: 84px; height: 92px;
+    image-rendering: pixelated;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, .7));
+}
+.rt__jp {
+    font-family: var(--f-jp);
+    font-size: .74rem;
+    color: var(--ink-mute);
+    letter-spacing: .06em;
+}
+.rt__nome {
+    font-family: var(--f-display);
+    font-size: .86rem;
+    color: var(--ink-soft);
+    text-align: center;
+    line-height: 1.25;
+}
+.rt.is-on .rt__nome { color: var(--ink); }
+
+/* ---------------- ficha do personagem ---------------- */
+.fc2 { padding: 1.4rem 1.3rem 1.2rem; }
+.fc2__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+}
+.fc2__nome { font-size: clamp(1.4rem, 3vw, 2rem); margin: .25rem 0 .1rem; }
+.fc2__jp { font-family: var(--f-jp); font-size: .84rem; color: var(--ink-mute); margin: 0; }
+
+.fc2__num { display: flex; gap: 1.3rem; margin: 0; }
+.fc2__num dt {
+    font-family: var(--f-mono); font-size: .55rem;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute);
+}
+.fc2__num dd {
+    margin: .15rem 0 0;
+    font-family: var(--f-display); font-size: 1.35rem; color: var(--blood-bright);
+}
+
+.fc2__resumo {
+    margin: .9rem 0 1.1rem;
+    padding-top: .8rem;
+    border-top: 1px solid var(--line-soft);
+    color: var(--ink-soft);
+    font-size: .9rem;
+    line-height: 1.7;
+}
+.fc2__rot { margin-bottom: .55rem; }
+
+.fc2__golpes { display: grid; gap: .3rem; margin: 0; padding: 0; list-style: none; }
+.fc2__golpes li {
+    display: grid;
+    grid-template-columns: 2rem auto auto 1fr;
+    align-items: baseline;
+    gap: .6rem;
+    padding: .35rem .5rem;
+    background: var(--bg-deep);
+    border-left: 2px solid var(--line);
+    font-size: .82rem;
+}
+.fc2__golpes li:hover { border-left-color: var(--blood-bright); }
+.fc2__golpes b { font-family: var(--f-display); color: var(--ink); font-size: .95rem; }
+.fc2__custo {
+    font-family: var(--f-mono); font-size: .62rem;
+    letter-spacing: .1em; color: var(--accent); white-space: nowrap;
+}
+.fc2__golpes em { color: var(--ink-mute); font-style: normal; font-size: .78rem; line-height: 1.5; }
+
+kbd {
+    display: inline-block;
+    min-width: 1.5rem;
+    padding: .1rem .35rem;
+    text-align: center;
+    background: var(--panel-2, var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    font-family: var(--f-mono); font-size: .64rem;
+    color: var(--ink-soft);
+}
+
+.fc2__go {
+    margin-top: 1.2rem;
+    padding: .6rem 1.5rem;
+    background: transparent;
+    border: 1px solid var(--blood-bright);
+    color: var(--blood-bright);
+    font-family: var(--f-mono); font-size: .68rem;
+    letter-spacing: .2em; text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color .3s, color .3s;
+}
+.fc2__go:hover { background: var(--blood-bright); color: var(--bg-deep); }
+
+/* ---------------- lista de golpes durante a partida ---------------- */
+.sb__lista {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin-top: .7rem;
+}
+.sb__listaItem {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .28rem .55rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--f-mono);
+    font-size: .64rem;
+    letter-spacing: .06em;
+    color: var(--ink-mute);
+    opacity: .45;
+    transition: opacity .2s, border-color .2s, color .2s;
+}
+.sb__listaItem.is-pronto { opacity: 1; border-color: var(--blood-deep); color: var(--ink-soft); }
+.sb__listaItem--livre { opacity: .85; }
+.sb__listaItem i { font-style: normal; color: var(--accent); }
+.sb__listaItem kbd { min-width: 1.2rem; font-size: .58rem; padding: 0 .25rem; }
+
+/* nome do golpe que acabou de sair */
+.sb__golpe {
+    position: absolute;
+    right: 1rem;
+    top: .8rem;
+    margin: 0;
+    font-family: var(--f-display);
+    font-size: 1.15rem;
+    color: var(--blood-bright);
+    text-shadow: 0 0 16px rgba(255, 28, 45, .7), 0 2px 8px #000;
+    pointer-events: none;
+    animation: fadeUp .35s var(--slow) both;
+}
+
+@media (max-width: 760px) {
+    .sb__fichas { grid-template-columns: 1fr; }
+    .sb__retratos { grid-auto-flow: column; justify-content: start; }
+}
+
+
+/* ---------------------------------------------------------
+   BESTIÁRIO
+   --------------------------------------------------------- */
+.sb__bestiario { margin-top: 1.2rem; padding: 1.2rem 1.3rem; }
+.sb__bestiario ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: .9rem 1.6rem;
+    margin: .9rem 0 0;
+    list-style: none;
+}
+.sb__bestiario li { display: flex; align-items: flex-start; gap: .7rem; }
+.sb__bestiario b {
+    font-family: var(--f-jp);
+    font-size: 1.15rem;
+    color: var(--blood-bright);
+    font-weight: 400;
+    line-height: 1.2;
+    opacity: .85;
+}
+.sb__bestiario span { display: grid; gap: .1rem; font-size: .78rem; line-height: 1.55; color: var(--ink-mute); }
+.sb__bestiario strong { font-family: var(--f-display); font-size: .95rem; color: var(--ink); font-weight: 500; }
+
+/* ---------------------------------------------------------
+   PAINEL DE JOGO
+   --------------------------------------------------------- */
+.hud {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    padding: .7rem 1rem;
+    margin-bottom: .7rem;
+}
+.hud__bar { display: flex; align-items: center; gap: .55rem; flex: 1 1 170px; min-width: 150px; }
+.hud__bar--prog { flex: 1 1 130px; }
+.hud__tag {
+    font-family: var(--f-mono); font-size: .55rem;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute);
+    width: 4.4em;
+}
+.hud__track {
+    flex: 1;
+    height: 8px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+.hud__fill { display: block; height: 100%; transition: width .12s linear; }
+.hud__fill--hp   { background: linear-gradient(90deg, var(--blood-deep), var(--blood-bright)); }
+.hud__fill--hp.is-baixa { animation: pulse .7s ease-in-out infinite; }
+.hud__fill--rc   { background: linear-gradient(90deg, #3d2a5c, #8b6fd4); }
+.hud__fill--prog { background: linear-gradient(90deg, #2a3d4a, var(--accent)); }
+.hud__bar b { font-family: var(--f-mono); font-size: .72rem; color: var(--ink); min-width: 2.6em; }
+
+.hud__kills {
+    font-family: var(--f-mono); font-size: .62rem;
+    letter-spacing: .12em; color: var(--ink-mute);
+    margin-left: auto;
+}
+
+.hud__chefe {
+    flex: 1 1 100%;
+    display: flex; align-items: center; gap: .7rem;
+    padding-top: .6rem;
+    border-top: 1px solid var(--line-soft);
+}
+.hud__chefe > span:first-child {
+    font-family: var(--f-jp); font-size: .8rem;
+    color: var(--blood-bright);
+}
+.hud__chefeTrack {
+    flex: 1;
+    height: 10px;
+    background: var(--bg-deep);
+    border: 1px solid var(--blood-deep);
+    overflow: hidden;
+}
+.hud__chefeTrack i {
+    display: block; height: 100%;
+    background: linear-gradient(90deg, #4a0810, var(--blood-bright));
+    box-shadow: 0 0 12px rgba(255, 28, 45, .5);
+    transition: width .15s linear;
+}
+
+/* ---------------------------------------------------------
+   TELA
+   --------------------------------------------------------- */
+.sb__tela { position: relative; }
+.sb__canvas {
+    display: block;
+    width: 100%;
+    background: #05070c;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    outline: none;
+    image-rendering: auto;
+}
+.sb__aviso {
+    position: absolute;
+    left: 50%;
+    bottom: 1.1rem;
+    transform: translateX(-50%);
+    max-width: 62ch;
+    margin: 0;
+    padding: .5rem 1rem;
+    text-align: center;
+    background: rgba(5, 3, 6, .82);
+    border-left: 2px solid var(--blood-bright);
+    color: var(--ink);
+    font-family: var(--f-display);
+    font-size: .92rem;
+    line-height: 1.55;
+    animation: fadeUp .5s var(--slow) both;
+    pointer-events: none;
+}
+
+.sb__ctrl {
+    display: flex; flex-wrap: wrap; gap: .4rem 1.4rem;
+    margin: .8rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--f-mono); font-size: .64rem;
+    letter-spacing: .06em; color: var(--ink-mute);
+}
+.sb__ctrl kbd {
+    display: inline-block;
+    padding: .1rem .4rem;
+    margin-right: .25rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    font-family: var(--f-mono); font-size: .62rem;
+    color: var(--ink-soft);
+}
+
+/* ---------------------------------------------------------
+   FIM
+   --------------------------------------------------------- */
+.sb__fim { margin-top: .5rem; }
+.sb__fimBtns { display: flex; gap: .8rem; flex-wrap: wrap; align-items: center; }
+.sb__fimBtns .pane__skip { margin-top: 1.5rem; }
+
+@media (max-width: 640px) {
+    .sb__best { text-align: left; }
+    .hud__kills { margin-left: 0; }
+    .sb__aviso { font-size: .8rem; bottom: .5rem; }
+}
+
+/* ---------------------------------------------------------
+   CRÉDITO DOS SPRITES
+   --------------------------------------------------------- */
+.sb__cred {
+    display: grid;
+    gap: .4rem;
+    margin: 1.2rem 0 0;
+    padding: .9rem 1.1rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--blood);
+    border-radius: var(--radius);
+    font-size: .78rem;
+    line-height: 1.7;
+    color: var(--ink-mute);
+}
+.sb__cred b { color: var(--ink-soft); font-weight: 500; }
+.sb__cred ul { display: grid; gap: .3rem; margin: .2rem 0; padding-left: 1rem; }
+.sb__cred li { line-height: 1.65; }
+.sb__cred p { margin: .4rem 0 0; opacity: .8; }
+
+/* ---------------------------------------------------------
+   BARRA DE PODER — três gomos, como no MUGEN
+   --------------------------------------------------------- */
+.hud__poder {
+    flex: 1 1 100%;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding-top: .55rem;
+    border-top: 1px solid var(--line-soft);
+}
+.hud__gomo {
+    flex: 1;
+    height: 9px;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+.hud__gomo i {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #3d2a5c, #b79bff);
+    transition: width .12s linear;
+}
+.hud__gomo.is-cheio {
+    border-color: #b79bff;
+    box-shadow: 0 0 10px rgba(183, 155, 255, .45);
+}
+.hud__gomo.is-cheio i { background: linear-gradient(90deg, #8b6fd4, #e0d4ff); }
+.hud__poder b {
+    font-family: var(--f-mono); font-size: .68rem;
+    color: #b79bff; min-width: 2.4em; text-align: right;
+}
+
+/* notação do comando na ficha */
+.fc2__cmd {
+    display: inline-block;
+    min-width: 4.6rem;
+    padding: .1rem .4rem;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    font-family: var(--f-mono);
+    font-size: .66rem;
+    letter-spacing: .06em;
+    color: var(--blood-bright);
+    white-space: nowrap;
+}
+.fc2__golpes li { grid-template-columns: auto auto auto 1fr; }
+.sb__listaItem i { font-style: normal; color: var(--ink-soft); }

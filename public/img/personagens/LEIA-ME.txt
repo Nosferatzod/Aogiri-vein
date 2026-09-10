@@ -1,0 +1,48 @@
+RETRATOS DAS FICHAS
+===================
+
+Por padrão cada ficha mostra uma MÁSCARA desenhada em SVG — nenhuma
+arte de Tokyo Ghoul é distribuída junto do projeto.
+
+Se quiser usar retratos de verdade, faça assim:
+
+1) Salve as imagens nesta pasta com o nome do id + .jpg
+   Exemplo:  eyepatch.jpg   rabbit.jpg   jason.jpg
+
+2) Abra src/data/dossiers.ts e troque uma linha só:
+
+       export const USE_PORTRAITS = true;
+
+Pronto. Toda ficha que tiver o arquivo passa a mostrar a foto; as que
+não tiverem voltam sozinhas para a máscara. Dá para ir adicionando aos
+poucos, sem quebrar nada.
+
+Formato sugerido: 600x800 (retrato 3:4), JPG ou WebP.
+
+Só um aviso: se o repositório for público, imagens do mangá/anime são
+material protegido. A máscara em SVG existe justamente para o site
+ficar bonito sem esse risco.
+
+IDs disponíveis:
+    eyepatch
+    binge-eater
+    rabbit
+    gourmet
+    serpent
+    raven
+    no-face
+    four-eyes
+    one-eyed-owl
+    non-killing-owl
+    black-rabbit
+    white-reaper
+    juuzou
+    amon
+    jason
+    tatara
+    noro
+    haise
+    urie
+    shirazu
+    saiko
+    mado

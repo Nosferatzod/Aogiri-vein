@@ -1,0 +1,148 @@
+.rg__head { margin-bottom: 1.8rem; }
+.rg__title { font-size: clamp(2rem, 5.5vw, 3.4rem); margin: .3rem 0 .7rem; }
+.rg__lead { color: var(--ink-soft); max-width: 64ch; line-height: 1.9; font-size: .92rem; }
+
+.rg__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+    gap: clamp(1.2rem, 3vw, 2.2rem);
+    align-items: start;
+}
+
+/* ---------------- formulário ---------------- */
+.rg__form { display: grid; gap: 1.1rem; padding: clamp(1.2rem, 3vw, 1.8rem); }
+
+.rg__field { display: grid; gap: .4rem; }
+.rg__field > span {
+    font-size: .62rem;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+.rg__field input,
+.rg__field select {
+    padding: .7rem .85rem;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--f-mono);
+    font-size: .92rem;
+    color: var(--ink);
+    transition: border-color .3s var(--ease);
+}
+.rg__field input:focus,
+.rg__field select:focus { outline: none; border-color: var(--accent); }
+.rg__field input::placeholder { color: var(--ink-mute); }
+
+.rg__kagune { border: none; }
+.rg__kagune legend {
+    font-size: .62rem;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: .5rem;
+    padding: 0;
+}
+.rg__kaguneGrid { display: grid; grid-template-columns: 1fr 1fr; gap: .45rem; }
+.rg__kg {
+    display: grid;
+    gap: .1rem;
+    padding: .7rem .8rem;
+    background: var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .3s var(--ease), background-color .3s var(--ease);
+}
+.rg__kg b {
+    font-family: var(--f-mono);
+    font-size: .8rem;
+    letter-spacing: .1em;
+    color: var(--ink);
+}
+.rg__kg small {
+    font-family: var(--f-jp);
+    font-size: .7rem;
+    letter-spacing: .2em;
+    color: var(--ink-mute);
+}
+.rg__kg em {
+    font-style: normal;
+    font-size: .62rem;
+    letter-spacing: .1em;
+    color: var(--ink-mute);
+    margin-top: .2rem;
+}
+.rg__kg:hover { border-color: var(--ink-mute); }
+.rg__kg.is-on { border-color: var(--accent); background: var(--accent-soft); }
+.rg__kg.is-on b { color: var(--accent); }
+
+.rg__readout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+.rg__readout > div {
+    background: var(--bg-deep);
+    padding: .8rem .9rem;
+    display: grid;
+    gap: .25rem;
+}
+.rg__readout b {
+    font-family: var(--f-display);
+    font-size: 1.6rem;
+    line-height: 1;
+    color: var(--ink);
+}
+.rg__readout .rate { font-family: var(--f-mono); font-size: 1rem; justify-self: start; }
+
+/* ---------------- prévia ---------------- */
+.rg__preview {
+    position: sticky;
+    top: 6.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-deep);
+}
+.rg__preview canvas { width: 100%; height: auto; display: block; }
+
+@media (max-width: 900px) {
+    .rg__body { grid-template-columns: 1fr; }
+    .rg__preview { position: static; max-width: 420px; margin-inline: auto; }
+}
+@media (max-width: 480px) {
+    .rg__kaguneGrid { grid-template-columns: 1fr; }
+}
+
+/* ---------------- escolha do documento ---------------- */
+.rg__kind { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; margin-bottom: 1.4rem; max-width: 620px; }
+.rg__kindBtn {
+    display: grid;
+    gap: .1rem;
+    padding: .9rem 1.1rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .3s var(--ease), background-color .3s var(--ease), transform .25s var(--ease);
+}
+.rg__kindBtn b { font-family: var(--f-display); font-size: 1.1rem; color: var(--ink-soft); transition: color .3s var(--ease); }
+.rg__kindBtn small { font-size: .66rem; letter-spacing: .14em; color: var(--ink-mute); }
+.rg__kindBtn:hover { border-color: var(--ink-mute); transform: translateY(-2px); }
+.rg__kindBtn.is-on { border-color: var(--accent); background: var(--panel-2); }
+.rg__kindBtn.is-on b { color: var(--accent); }
+
+.rg__field em { font-style: normal; text-transform: none; letter-spacing: 0; color: var(--ink-mute); }
+
+/* o crachá é deitado; a ficha é em pé */
+.rg__preview--ccg { max-width: 620px; }
+@media (max-width: 900px) {
+    .rg__preview--ccg { max-width: 100%; }
+    .rg__kind { grid-template-columns: 1fr; }
+}

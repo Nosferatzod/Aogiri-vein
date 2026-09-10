@@ -1,0 +1,291 @@
+.ds__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.8rem;
+}
+.ds__title { font-size: clamp(2rem, 5.5vw, 3.4rem); margin: .3rem 0 .7rem; }
+.ds__lead { color: var(--ink-soft); max-width: 64ch; line-height: 1.9; font-size: .92rem; }
+
+.ds__legend { display: grid; gap: .35rem; }
+.ds__legend li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .66rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+.ds__legend i { width: 9px; height: 9px; border: 1px solid currentColor; }
+
+/* níveis */
+.d-low  { color: #6f9dc4; }
+.d-mid  { color: #7d8ea1; }
+.d-high { color: #e0722f; }
+.d-crit { color: var(--blood-bright); }
+.ds__legend .d-low i,
+.ds__legend .d-mid i,
+.ds__legend .d-high i,
+.ds__legend .d-crit i { background: currentColor; opacity: .55; }
+
+.ds__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+    gap: clamp(1rem, 3vw, 2rem);
+    align-items: start;
+}
+
+/* ---------------- a carta ---------------- */
+.tk { padding: .9rem .9rem .9rem; }
+
+.tk__svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: var(--line-soft);            /* a grade herda daqui */
+    touch-action: manipulation;
+}
+
+.tk__paper { fill: var(--bg-deep); }
+.tk__grid  { opacity: .5; }
+
+/* água */
+.tk__bay {
+    fill: color-mix(in srgb, var(--accent) 14%, var(--bg-deep));
+    stroke: color-mix(in srgb, var(--accent) 42%, transparent);
+    stroke-width: 1.4;
+}
+.tk__water {
+    fill: var(--ink-mute);
+    font-family: var(--f-jp);
+    font-size: 19px;
+    letter-spacing: .12em;
+    text-anchor: middle;
+    opacity: .75;
+}
+.tk__waterSub {
+    fill: var(--ink-mute);
+    font-family: var(--f-mono);
+    font-size: 9.5px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    text-anchor: middle;
+    opacity: .5;
+}
+.tk__river {
+    fill: none;
+    stroke: color-mix(in srgb, var(--accent) 45%, transparent);
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: .55;
+    pointer-events: none;
+}
+
+/* massa de terra */
+.tk__landShadow {
+    fill: var(--panel);
+    stroke: none;
+    filter: drop-shadow(0 10px 26px rgba(0, 0, 0, .55));
+}
+.tk__coast {
+    fill: none;
+    stroke: var(--ink-mute);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    opacity: .8;
+    pointer-events: none;
+}
+
+/* distritos */
+.tk__cell { cursor: pointer; outline: none; }
+.tk__fill {
+    fill: color-mix(in srgb, currentColor 12%, var(--panel));
+    stroke: color-mix(in srgb, currentColor 55%, var(--line));
+    stroke-width: 1;
+    stroke-linejoin: round;
+    transition: fill .28s var(--ease), stroke-width .28s var(--ease);
+}
+.tk__cell:hover .tk__fill,
+.tk__cell:focus-visible .tk__fill {
+    fill: color-mix(in srgb, currentColor 30%, var(--panel));
+    stroke-width: 1.8;
+}
+.tk__cell.is-on .tk__fill {
+    fill: color-mix(in srgb, currentColor 46%, var(--panel));
+    stroke: currentColor;
+    stroke-width: 2;
+}
+
+.tk__n {
+    fill: var(--ink-soft);
+    font-family: var(--f-mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-anchor: middle;
+    pointer-events: none;
+    transition: fill .28s var(--ease);
+}
+.tk__cell:hover .tk__n { fill: var(--ink); }
+.tk__cell.is-on .tk__n { fill: var(--ink); }
+
+/* pino nos distritos que têm ponto de interesse */
+.tk__pin { fill: currentColor; opacity: .9; pointer-events: none; }
+.tk__cell.is-on .tk__pin { fill: var(--ink); }
+
+/* alvo no distrito aberto */
+.tk__mark circle { fill: none; stroke: var(--accent); stroke-width: 1.2; opacity: .55; }
+.tk__mark path   { stroke: var(--accent); stroke-width: 1.4; opacity: .9; }
+.tk__mark { animation: tkPulse 2.6s ease-in-out infinite; }
+@keyframes tkPulse {
+    0%, 100% { opacity: .55; }
+    50%      { opacity: 1; }
+}
+
+/* rótulo sob o cursor */
+.tk__tip {
+    fill: var(--ink);
+    font-family: var(--f-jp);
+    font-size: 15px;
+    letter-spacing: .06em;
+    paint-order: stroke;
+    stroke: var(--bg-deep);
+    stroke-width: 4px;
+    stroke-linejoin: round;
+}
+
+.tk__rose {
+    fill: var(--ink-mute);
+    font-family: var(--f-mono);
+    font-size: 12px;
+    letter-spacing: .28em;
+    opacity: .6;
+}
+
+/* ---------------- o 24º ---------------- */
+.tk__under {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    margin-top: .9rem;
+    padding: .85rem 1rem;
+    text-align: left;
+    background:
+        repeating-linear-gradient(
+            -45deg,
+            transparent 0 9px,
+            color-mix(in srgb, var(--blood) 9%, transparent) 9px 18px
+        ),
+        var(--bg-deep);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color .3s var(--ease);
+}
+.tk__under:hover { border-color: var(--blood); }
+.tk__under.is-on { border-color: var(--blood-bright); }
+
+.tk__underJp {
+    font-family: var(--f-jp);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--blood-bright);
+    opacity: .85;
+}
+.tk__underBody { display: grid; gap: .18rem; }
+.tk__underBody b { font-family: var(--f-display); font-size: 1rem; color: var(--ink); }
+.tk__underBody small { font-size: .74rem; line-height: 1.55; color: var(--ink-mute); }
+.tk__underGo {
+    margin-left: auto;
+    font-family: var(--f-mono);
+    font-size: .6rem;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    white-space: nowrap;
+}
+.tk__under:hover .tk__underGo { color: var(--blood-bright); }
+
+
+
+/* ---------------- painel ---------------- */
+.ds__panel { padding: 1.3rem; position: sticky; top: 6.5rem; }
+.ds__num {
+    font-size: clamp(3rem, 8vw, 4.6rem);
+    line-height: 1;
+    color: var(--ink);
+    margin: .2rem 0 .6rem;
+}
+.ds__num span { font-size: .38em; color: var(--ink-mute); }
+
+.ds__name {
+    display: flex;
+    align-items: baseline;
+    gap: .6rem;
+    margin: 0 0 .8rem;
+}
+.ds__name b { font-family: var(--f-jp); font-size: 1.15rem; color: var(--ink); font-weight: 400; }
+.ds__name small {
+    font-family: var(--f-mono);
+    font-size: .64rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+}
+
+.ds__landmark {
+    display: grid;
+    gap: .35rem;
+    margin: .9rem 0 0;
+    padding: .75rem .85rem;
+    background: var(--accent-soft);
+    border-left: 2px solid var(--accent);
+    font-size: .84rem;
+    line-height: 1.65;
+    color: var(--ink);
+}
+
+.ds__danger {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .2rem .6rem;
+    border: 1px solid currentColor;
+    border-radius: var(--radius);
+    font-size: .64rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+}
+.ds__danger i { width: 7px; height: 7px; background: currentColor; }
+
+.ds__note {
+    margin-top: .9rem;
+    font-size: .88rem;
+    color: var(--ink-soft);
+    line-height: 1.8;
+}
+
+.ds__residents {
+    margin-top: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line-soft);
+}
+.ds__residents ul { display: grid; gap: .4rem; margin-top: .6rem; }
+.ds__residents li {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-size: .85rem;
+    color: var(--ink);
+}
+
+@media (max-width: 900px) {
+    .ds__body { grid-template-columns: 1fr; }
+    .ds__panel { position: static; }
+}
+
