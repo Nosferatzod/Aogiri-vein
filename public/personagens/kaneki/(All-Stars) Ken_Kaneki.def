@@ -1,0 +1,60 @@
+; [KEN KANEKI BY RIVELIO] =====================================================================
+
+; This char has been commissioned by Ken Kaneki Gaming (AKA: Kiro Mikado). 
+; ---> https://www.youtube.com/channel/UCiiDz5gijE7V72LVeUUX2pA
+
+; For all my previous and future content, check out my channel below:
+; ---> https://www.youtube.com/user/RivelioMugen
+
+; Got any questions, requests or useful feedback to give? Be sure to let me know:
+; ---> Discord: Rivelio#1966
+
+; [SPECIAL MENTION] ===========================================================================
+
+; AAGUS & MATTFV: Sprite Sheet creation, expansion and huge support.
+; ---> DeviantArt: https://www.deviantart.com/aagus
+; ---> DeviantArt: https://www.deviantart.com/mattfv
+
+; MKTENDOU: HUGE help in improving coding structure and debugging.
+; ---> Youtube: https://www.youtube.com/user/MkTendou
+
+; AFTERGLOW: Big help in finding and extracting voice clips.
+; ---> Youtube: https://www.youtube.com/user/Afterglowy
+
+; [CREDITS] ===================================================================================
+; Beta testing, advice and/or overall support:
+; -> Aagus, James1972, LEANBOOX, Mikel8888, MattFV, Yugen, Waldo1243.
+; -> LeoKing, Knightmare404, Planeptune, Santoryu, Hatsu.
+; -> Afterglow, CloudStrifeHero, Drag02, Zenzo.
+; -> David11.
+
+[Info]
+name="All-Stars: Ken Kaneki"
+displayname="Kaneki"
+versiondate=28/02/2020
+mugenversion=1.1
+author="Rivelio"
+pal.defaults=1,2,3,4,5,6,7,8,9,10,11,12
+[Files]
+sprite=Kaneki.sff
+sound=Kaneki.snd
+anim=Kaneki.air
+cmd=Kaneki.cmd
+cns=Kaneki.cns
+st=Kaneki.cns
+stcommon=common1.cns
+pal1=Pal1.act
+pal2=Pal2.act
+pal3=Pal3.act
+pal4=Pal4.act
+pal5=Pal5.act
+pal6=Pal6.act
+pal7=Pal1.act
+pal8=Pal2.act
+pal9=Pal3.act
+pal10=Pal4.act
+pal11=Pal5.act
+pal12=Pal6.act
+[Arcade]
+intro.storyboard=
+ending.storyboard=

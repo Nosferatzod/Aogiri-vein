@@ -3,5 +3,7 @@ dist/
 .DS_Store
 Thumbs.db
 
-# os arquivos de MUGEN sao dos autores deles: ficam na maquina de quem tem
-public/personagens/
+# Os arquivos de MUGEN sao dos autores deles. Entram no repositorio com
+# autorizacao e com o credito em public/personagens/CREDITOS.md; o audio
+# (.snd) nao entra em nenhum caso.
+public/personagens/**/*.snd
