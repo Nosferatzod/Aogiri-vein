@@ -18,6 +18,7 @@
    ========================================================= */
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { join, resolve } from 'node:path';
 import { deflateSync, inflateSync } from 'node:zlib';
 
@@ -211,7 +212,7 @@ function pedaco(tipo, dados) {
     return fora;
 }
 
-function escreverPNG(w, h, rgba) {
+export function escreverPNG(w, h, rgba) {
     const ihdr = Buffer.alloc(13);
     ihdr.writeUInt32BE(w, 0);
     ihdr.writeUInt32BE(h, 4);
@@ -495,7 +496,7 @@ function lz5(dados, w, h) {
 /* =========================================================
    SFF — v1 e v2
    ========================================================= */
-function lerSFF(caminho) {
+export function lerSFF(caminho) {
     const b = readFileSync(caminho);
     if (b.slice(0, 11).toString('latin1') !== 'ElecbyteSpr')
         throw new Error('não parece um SFF: ' + caminho);
@@ -658,7 +659,7 @@ function lerAIR(caminho) {
  * navegador. Reduzido pela metade ele cabe, e como é um brilho difuso
  * a perda não aparece.
  */
-function reduzir(rgba, w, h, n) {
+export function reduzir(rgba, w, h, n) {
     const nw = Math.max(1, Math.floor(w / n));
     const nh = Math.max(1, Math.floor(h / n));
     const out = Buffer.alloc(nw * nh * 4);
@@ -828,4 +829,6 @@ function principal() {
             (a.rotulo ? '  ' + a.rotulo : ''));
 }
 
-principal();
+/* so roda a conversao quando chamado direto: outros scripts importam
+   o leitor de SFF daqui em vez de escrever um segundo */
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) principal();

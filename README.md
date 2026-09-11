@@ -29,8 +29,62 @@ O interruptor no cabeçalho é um kakugan que abre quando você troca de lado.
 | **Arquivo** 記録 | 22 fichas com filtro por vínculo, obra (TG / :re), classificação e busca. Cada uma tem um trecho sob sigilo que você quebra clicando |
 | **Kagune** 赫子 | Os quatro tipos: onde nascem (silhueta interativa), forma, atributos, usuários e o ciclo de vantagem |
 | **Distritos** 区 | Mapa de Tóquio: clique no distrito e a ficha abre ao lado, com nível de ameaça, ponto de interesse e registros vinculados |
-| **Subsolo** 地下 | O jogo: plataforma de ação no 24º distrito. Escolha o personagem, desça com o arsenal completo dele, e no fim enfrente o que rasteja |
+| **Subsolo** 地下 | Dois jogos. **Descida**: plataforma de ação no 24º distrito, uma vida, com o Chefe no fim. **Confronto**: um contra um, com um motor de M.U.G.E.N que lê os arquivos originais dos personagens |
 | **Registro** 登録 | Gere seu crachá da CCG ou sua ficha de ameaça e baixe em PNG |
+
+---
+
+## O Subsolo tem dois modos
+
+**Descida** 地下 é o que sempre esteve aqui: uma vida, o traçado sorteado e
+o Chefe no fim, com os personagens em atlas convertido — 618 KB para todo o
+elenco.
+
+**Confronto** 対戦 é outra coisa. É um motor de M.U.G.E.N escrito do zero em
+TypeScript, que **interpreta os arquivos originais dos personagens** — o
+`.sff` dos sprites, o `.air` das animações com as caixas de golpe, o `.cmd`
+dos comandos e o `.cns`, que é uma linguagem de programação inteira com
+precedência de operador, intervalos e redirecionamento. Sem conversão: o
+mesmo arquivo que roda no MUGEN de verdade.
+
+O que isso significa na prática: cada personagem traz os golpes que o autor
+dele escreveu, com os nomes que o autor deu, e a aba mostra a lista lida do
+`.cmd`. Nada é reescrito à mão.
+
+### Nenhum personagem acompanha este site
+
+Os arquivos de M.U.G.E.N são de seus autores, e `public/personagens/` está
+no `.gitignore`. Há dois caminhos para ter lutadores:
+
+```bash
+# 1. a sua própria pasta, na sua máquina
+mkdir -p public/personagens/kaneki      # uma pasta por personagem
+npm run lutadores                        # gera lista.json e retrato.png
+```
+
+O `retrato.png` são poucos KB extraídos do próprio `.sff` (o MUGEN guarda o
+retrato em 9000,1), e é o que deixa o menu mostrar a cara do personagem sem
+precisar ler os 50 MB de sprites antes.
+
+2. Ou **arraste a pasta para a tela**. Ela é lida na aba, na sua máquina, e
+não sobe para lugar nenhum — é por isso que um `.sff` de 82 MB abre sem
+pensar duas vezes.
+
+### O cenário é o mesmo
+
+O Confronto usa a rua do 24º distrito que o Subsolo já desenha: três camadas
+de paralaxe, neon com kanji, fiação e a névoa rasteira, **zero bytes de
+imagem**. Baixar um stage de MUGEN não traria nada além de peso — lá também
+não existe colisão de cenário, só fundo, chão em `y = 0` e o limite lateral,
+e essas duas coisas o motor já faz.
+
+### A janela dos comandos
+
+O tempo para completar um ↓↘→ é do autor do personagem, e ele escreve
+pensando em arcade: o do Juuzou dá 15 quadros para o movimento inteiro mais
+o botão — 250 ms. No teclado isso só sai se cada direção ficar segurada 4
+quadros ou menos. O seletor **janela dos comandos** soma quadros sem mudar a
+ordem exigida nem aceitar entrada errada; `fiel ao MUGEN` devolve o original.
 
 ---
 
@@ -153,6 +207,9 @@ devolve sempre a mesma ficha — parece laudo, não sorteio.
 ```bash
 npm install
 npm run dev
+
+# lutadores do Confronto, se voce tiver personagens em public/personagens/
+npm run lutadores
 ```
 
 `npm run build` roda `tsc --noEmit` antes do bundle, então erro de tipo quebra
@@ -167,9 +224,14 @@ src/
 ├── data/dossiers.ts     # fichas, kagune, distritos e os tipos
 ├── game/subsolo.ts      # motor do Subsolo: salas, fisica, colisao (puro)
 ├── game/elenco.ts       # personagens, golpes e bestiario do Subsolo
+├── mugen/               # o motor de M.U.G.E.N: expr, formatos, motor, render
+│   ├── expr/            #   a linguagem do .cns — lexer, parser, avaliador
+│   ├── formatos/        #   sff, air, cmd, cns, pcx, png, rle, ini
+│   ├── motor/           #   personagem, controladores, colisao, controle padrao
+│   └── render/          #   sprite indexado pintado com a paleta do banco
 ├── data/tokyo.ts        # geografia dos 24 distritos + Voronoi
 ├── components/          # Kakugan (o olho), Counting (1000−7), Toasts
-├── views/               # Boot, Arquivo, KaguneView, Distritos, Subsolo, Registro
+├── views/               # Boot, Arquivo, KaguneView, Distritos, Subsolo, Confronto, Registro
 └── styles/global.css    # os dois temas em tokens trocados por [data-side]
 ```
 

@@ -9,6 +9,7 @@ import {
 import { desenhar } from './subsoloDesenho';
 import { carregarAtores, ator, duracaoDe } from './subsoloSprite';
 import { acordarSom, alternarMudo, estaMudo, tocarFila } from './subsoloSom';
+import Confronto from './Confronto';
 import './Subsolo.css';
 
 /* =========================================================
@@ -20,6 +21,15 @@ import './Subsolo.css';
    ========================================================= */
 
 type Etapa = 'escolha' | 'jogando' | 'fim';
+/**
+ * Dois jogos na mesma aba, e a escolha e a primeira coisa que aparece.
+ *
+ * DESCIDA e o que sempre esteve aqui: uma vida, salas sorteadas e o
+ * Chefe no fim. CONFRONTO e o motor de MUGEN de verdade, lendo os
+ * arquivos originais dos personagens — dois lutadores, um contra o
+ * outro, no mesmo cenario.
+ */
+type Modo = 'descida' | 'confronto';
 
 interface Painel {
     hp: number; hpMax: number;
@@ -52,6 +62,12 @@ const BOTAO: Record<string, 'a' | 'b' | 'c' | undefined> = {
 };
 
 export default function Subsolo({ side }: { side: Side }) {
+    /* enquanto o Confronto está em combate, a escolha de modo sai da frente */
+    const [emCombate, setEmCombate] = useState(false);
+    /* ?modo=confronto cai direto no versus */
+    const [modo, setModo] = useState<Modo>(
+        new URLSearchParams(window.location.search).get('modo') === 'confronto' ? 'confronto' : 'descida'
+    );
     const [etapa, setEtapa] = useState<Etapa>('escolha');
     const [heroi, setHeroi] = useState<AtorId>('kaneki');
     const [melhor, setMelhor] = useState(0);
@@ -254,7 +270,38 @@ export default function Subsolo({ side }: { side: Side }) {
                     </div>
                 </header>
 
-                {etapa === 'escolha' && <Escolha onDescer={descer} prontos={prontos} />}
+                {etapa === 'escolha' && !emCombate && (
+                    <div className="sb__modos">
+                        <button
+                            type="button"
+                            className={`sbmd ${modo === 'descida' ? 'is-on' : ''}`}
+                            onClick={() => setModo('descida')}
+                            aria-pressed={modo === 'descida'}
+                        >
+                            <span className="sbmd__jp">地下</span>
+                            <b>Descida</b>
+                            <em>Uma vida, o traçado sorteado e o Chefe esperando no fim.</em>
+                        </button>
+                        <button
+                            type="button"
+                            className={`sbmd ${modo === 'confronto' ? 'is-on' : ''}`}
+                            onClick={() => setModo('confronto')}
+                            aria-pressed={modo === 'confronto'}
+                        >
+                            <span className="sbmd__jp">対戦</span>
+                            <b>Confronto</b>
+                            <em>Um contra um, com o motor de MUGEN lendo os arquivos originais.</em>
+                        </button>
+                    </div>
+                )}
+
+                {etapa === 'escolha' && modo === 'descida' && <Escolha onDescer={descer} prontos={prontos} />}
+                {etapa === 'escolha' && modo === 'confronto' && (
+                    <Confronto
+                        onSair={() => setModo('descida')}
+                        onEtapa={e => setEmCombate(e === 'luta')}
+                    />
+                )}
 
                 {etapa === 'jogando' && (
                     <div className="sb__jogo">

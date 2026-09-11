@@ -20,10 +20,16 @@ const VIEWS: { id: View; label: string; jp: string }[] = [
     { id: 'registro',  label: 'Registro',  jp: '登録' }
 ];
 
+/* link direto para uma seção: ?view=subsolo, e ?boot=0 pula a abertura.
+   Serve para mandar alguém direto ao Confronto sem explicar o caminho. */
+const inicio = new URLSearchParams(window.location.search);
+const VIEW_INICIAL = (VIEWS.some(v => v.id === inicio.get('view'))
+    ? inicio.get('view') : 'arquivo') as View;
+
 export default function App() {
-    const [booted, setBooted] = useState(false);
+    const [booted, setBooted] = useState(inicio.get('boot') === '0');
     const [side, setSide] = useState<Side>('ccg');
-    const [view, setView] = useState<View>('arquivo');
+    const [view, setView] = useState<View>(VIEW_INICIAL);
     const [tearing, setTearing] = useState(false);
     const [counting, setCounting] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);

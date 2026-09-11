@@ -27,7 +27,16 @@ const ruido = (n: number) => {
     return x - Math.floor(x);
 };
 
-function fundo(c: C, j: Jogo) {
+/**
+ * A RUA — a mesma para os dois modos.
+ *
+ * Era `fundo(c, j)` e dependia do objeto do jogo inteiro, quando na
+ * verdade so precisa de tres numeros: onde a camera esta, e que horas sao
+ * (para o letreiro piscar). Separei porque o Confronto usa o MESMO cenario,
+ * e cenario duplicado vira cenario que muda em um lugar so.
+ */
+export function cenarioDeRua(c: C, cam: number, camY: number, t: number) {
+    const j = { cam, camY, t } as Jogo;
     /* céu de Tóquio à noite: o roxo alto e o alaranjado da poluição luminosa */
     const g = c.createLinearGradient(0, 0, 0, VIEW_H);
     g.addColorStop(0, '#0a0a18');
@@ -153,6 +162,8 @@ function fundo(c: C, j: Jogo) {
     c.fillStyle = n;
     c.fillRect(0, VIEW_H - 170, VIEW_W, 170);
 }
+
+const fundo = (c: C, j: Jogo) => cenarioDeRua(c, j.cam, j.camY, j.t);
 
 /* ---------------------------------------------------------
    TERRENO — só o que está na tela, com runs unidas
