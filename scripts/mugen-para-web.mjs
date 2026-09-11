@@ -631,7 +631,7 @@ function resolverLigados(sprites) {
 /* =========================================================
    AIR
    ========================================================= */
-function lerAIR(caminho) {
+export function lerAIR(caminho) {
     const linhas = readFileSync(caminho, 'latin1').split(/\r?\n/);
     const acoes = new Map();
     let atual = null;

@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lutadores": "node scripts/personagens-mugen.mjs"
+    "lutadores": "node scripts/personagens-mugen.mjs",
+    "peso": "node --max-old-space-size=6144 scripts/medir-peso.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
